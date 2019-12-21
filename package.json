@@ -1,13 +1,16 @@
 {
-  "name": "nodejs-lib-template",
+  "name": "firebase-react-components",
   "_": "[bump]",
   "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["/dist/*"],
+  "files": [
+    "/dist/*"
+  ],
   "scripts": {
-    "test": "mocha --require ts-node/register --timeout 10000 tests/* --colors"
+    "test": "mocha --require ts-node/register --timeout 10000 tests/* --colors",
+    "example": "yarn install-peers -f && parcel serve --no-autoinstall example/index.html"
   },
   "keywords": [],
   "author": "Tommaso De Rossi, morse <beats.by.morse@gmail.com>",
@@ -15,8 +18,22 @@
   "devDependencies": {
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.0.7",
+    "install-peers-cli": "^2.2.0",
     "mocha": "^6.1.4",
     "ts-node": "^8.2.0",
     "typescript": "^3.5.1"
+  },
+  "dependencies": {
+    "@types/firebase": "^3.2.1",
+    "hybrid-components": "^3.0.4",
+    "react-firebase-hooks": "^2.1.1",
+    "react-social-login-buttons": "^3.0.0",
+    "react-use-promise": "^0.2.0"
+  },
+  "peerDependencies": {
+    "firebase": "^7.6.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "styled-components": "^4.4.1"
   }
 }
