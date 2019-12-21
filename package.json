@@ -21,7 +21,7 @@
     "install-peers-cli": "^2.2.0",
     "mocha": "^6.1.4",
     "ts-node": "^8.2.0",
-    "typescript": "^3.5.1"
+    "typescript": "^3.7.4"
   },
   "dependencies": {
     "@types/firebase": "^3.2.1",
