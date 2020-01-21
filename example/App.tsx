@@ -1,7 +1,7 @@
 import { GoogleButton, GithubButton } from '../src/'
 import React from 'react'
 import { H1, Image, Text, Box, Row } from 'hybrid-components'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
 import { useAuthState } from 'react-firebase-hooks/auth'
 
 const App = () => {
