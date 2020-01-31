@@ -46,21 +46,6 @@ import Router from 'next/router'
 
 const FIREBASE_COOKIE_NAME = 'cookiename'
 
-async function onLogin(user: firebase.User) {
-    const idToken = await user.getIdToken()
-    const response = await fetch('/api/login', {
-        method: 'POST',
-        credentials: 'include',
-        body: idToken,
-    })
-    if (!response.ok) {
-        alert(response.statusText)
-        return
-    }
-    console.log(JSON.stringify(user, null, 4))
-    await Router.push('/')
-}
-
 const Page = () => {
     if (!firebase.apps.length) {
         firebase.initializeApp(FIREBASE_CONFIG)
@@ -74,5 +59,20 @@ const Page = () => {
             onLogin={onLogin}
         />
     )
+}
+
+async function onLogin(user: firebase.User) {
+    const idToken = await user.getIdToken()
+    const response = await fetch('/api/login', {
+        method: 'POST',
+        credentials: 'include',
+        body: idToken,
+    })
+    if (!response.ok) {
+        alert(response.statusText)
+        return
+    }
+    console.log(JSON.stringify(user, null, 4))
+    await Router.push('/')
 }
 ```
