@@ -1,5 +1,5 @@
 import { GoogleButton, GithubButton } from '../src/'
-import React from 'react'
+import React, { useState } from 'react'
 import { H1, Image, Text, Box, Row } from 'hybrid-components'
 import firebase from 'firebase/app'
 import { useAuthState } from 'react-firebase-hooks/auth'
@@ -8,13 +8,15 @@ const App = () => {
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig)
     }
-    const [user, loading, error] = useAuthState(firebase.auth())
+    const [user, setUser] = useState({})
     return (
         <Box alignContent='center' alignItems='center'>
             <GoogleButton
                 config={firebaseConfig}
                 text='Start With Google'
-                onLogin={async (user) => alert(JSON.stringify(user, null, 4))}
+                onLogin={async (user) => {
+                    setUser(user)
+                }}
             />
             <GithubButton config={firebaseConfig} text='Start With Github' />
             <Box maxWidth='800px' overflowX='scroll'>
@@ -32,7 +34,7 @@ const firebaseConfig = {
     storageBucket: 'molten-enigma-261612.appspot.com',
     messagingSenderId: '794182721870',
     appId: '1:794182721870:web:945e67c12addaa0cd43e1f',
-    measurementId: 'G-YL40MBMZ0L'
+    measurementId: 'G-YL40MBMZ0L',
 }
 
 export default App

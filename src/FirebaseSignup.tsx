@@ -1,29 +1,21 @@
-import React, { useEffect, useState, useMemo } from 'react'
-import { Box, Row } from 'hybrid-components'
-import usePromise from 'react-use-promise'
-
-import styled, {
-    createGlobalStyle,
-    ThemeProvider,
-    CSSObject
-} from 'styled-components'
-import {
-    FacebookLoginButton,
-    GoogleLoginButton,
-    GithubLoginButton
-} from 'react-social-login-buttons'
-
 import firebase from 'firebase/app'
 import 'firebase/auth'
-import { BoxProps } from 'hybrid-components'
+import React, { useEffect, useMemo, useState } from 'react'
+import {
+    GithubLoginButton,
+    GoogleLoginButton,
+} from 'react-social-login-buttons'
+import usePromise from 'react-use-promise'
+import { CSSObject } from 'styled-components'
 
 export type LoginButtonProps = {
     config: any
     text?: string
     signedInText?: string
     provider?: any
-    onLogin?: (user: firebase.auth.UserCredential) => Promise<any>
-} & BoxProps
+    onLogin?: (user: firebase.User) => Promise<any>
+    onError?: (e: firebase.FirebaseError) => void
+}
 
 function useProviders({ config, ...rest }) {
     const [user, setUser] = useState<firebase.User>(undefined)
@@ -33,6 +25,7 @@ function useProviders({ config, ...rest }) {
         if (!firebase.apps.length) {
             firebase.initializeApp(config)
         }
+
         setAuth(firebase.auth())
     }, [])
 
@@ -45,15 +38,13 @@ function useProviders({ config, ...rest }) {
                 },
                 (e) => alert(e.message)
             )
-            return () => {
-                listener()
-            }
+            return listener
         }
     }, [auth])
 
     return {
         auth,
-        user
+        user,
     }
 }
 
@@ -63,64 +54,63 @@ export const GenericButton = ({
     provider = null as firebase.auth.AuthProvider,
     signedInText,
     Button,
-    onLogin=null,
-    ...rest
+    onLogin = null,
+    onError = (e: firebase.FirebaseError) => alert(e.message),
 }) => {
     const { auth, user } = useProviders({ config })
-    // console.log(user)
     const [result, error, state] = usePromise(async () => {
         if (auth) {
             try {
-                const {user} = await auth
-                    .getRedirectResult()
+                const { user } = await auth.getRedirectResult()
                 if (user && onLogin) {
                     await onLogin(user)
                 }
             } catch (e) {
-                alert(e.message)
+                onError(e)
             }
         }
     }, [auth])
 
+    if (state === 'pending') {
+        return (
+            <Button
+                style={
+                    {
+                        background: '#eee',
+                        color: 'black',
+                        cursor: 'default',
+                        boxShadow: 'none',
+                    } as CSSObject
+                }
+                activeStyle={{}}
+                preventActiveStyles
+                className='bp3-skeleton'
+                text='loading'
+            />
+        )
+    }
+    if (!user || user.providerData[0].providerId !== provider.providerId) {
+        return (
+            <Button
+                onClick={() => auth.signInWithRedirect(provider)}
+                text={text}
+            />
+        )
+    }
     return (
-        <Box maxWidth='300px' {...rest}>
-            {state === 'pending' ? (
-                <Button
-                    style={
-                        {
-                            background: '#eee',
-                            color: 'black',
-                            cursor: 'default',
-                            boxShadow: 'none'
-                        } as CSSObject
-                    }
-                    activeStyle={{}}
-                    preventActiveStyles
-                    className='bp3-skeleton'
-                    text='loading'
-                />
-            ) : !user ||
-              user.providerData[0].providerId !== provider.providerId ? (
-                <Button
-                    onClick={() => auth.signInWithRedirect(provider)}
-                    text={text}
-                />
-            ) : (
-                <Button
-                    style={
-                        {
-                            background: '#eee',
-                            color: 'black',
-                            cursor: 'default',
-                            boxShadow: 'none'
-                        } as CSSObject
-                    }
-                    activeStyle={{}}
-                    preventActiveStyles
-                    text={signedInText}
-                />
-            )}
-        </Box>
+        <Button
+            style={
+                {
+                    background: '#eee',
+                    color: 'black',
+                    cursor: 'default',
+                    boxShadow: 'none',
+                } as CSSObject
+            }
+            activeStyle={{}}
+            preventActiveStyles
+            text={signedInText}
+        />
     )
 }
 
