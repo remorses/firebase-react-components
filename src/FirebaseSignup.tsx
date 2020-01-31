@@ -95,7 +95,7 @@ export const GenericButton = ({
     const cookieString = useCookie ? cookie.get(useCookie) : null
     const loggedOut =
         !user ||
-        user.providerData[0].providerId !== provider.providerId ||
+        // user.providerData[0].providerId !== provider.providerId ||
         !cookieString
     if (loggedOut) {
         return (
