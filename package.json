@@ -30,6 +30,8 @@
         "typescript": "^3.7.4"
     },
     "dependencies": {
+        "@types/js-cookie": "^2.2.4",
+        "js-cookie": "^2.2.1",
         "react-social-login-buttons": "^3.0.0",
         "react-use-promise": "^0.2.0"
     }

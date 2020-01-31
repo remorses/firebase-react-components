@@ -21,11 +21,10 @@ const App = () => {
     return (
         <Box alignContent='center' alignItems='center'>
             <GoogleButton
-                config={firebaseConfig}
                 text='Start With Google'
-                onLogin={async user => alert(JSON.stringify(user, null, 4))}
+                onLogin={async (user) => alert(JSON.stringify(user, null, 4))}
             />
-            <GithubButton config={firebaseConfig} text='Start With Github' />
+            <GithubButton text='Start With Github' />
             <Box maxWidth='800px' overflowX='scroll'>
                 <pre>{JSON.stringify(user, null, 4)}</pre>
             </Box>

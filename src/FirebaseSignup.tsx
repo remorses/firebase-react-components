@@ -7,23 +7,26 @@ import {
 } from 'react-social-login-buttons'
 import usePromise from 'react-use-promise'
 import { CSSObject } from 'styled-components'
+import cookie from 'js-cookie'
 
 export type LoginButtonProps = {
-    config: any
     text?: string
     signedInText?: string
     provider?: any
     onLogin?: (user: firebase.User) => Promise<any>
     onError?: (e: firebase.FirebaseError) => void
+    useCookie?: string
 }
 
-function useProviders({ config, ...rest }) {
+function useAuth() {
     const [user, setUser] = useState<firebase.User>(undefined)
     const [auth, setAuth] = useState<firebase.auth.Auth>(undefined)
 
     useEffect(() => {
         if (!firebase.apps.length) {
-            firebase.initializeApp(config)
+            console.error(
+                'you must call firebase.auth().initializeApp() before using firebase-react-components'
+            )
         }
 
         setAuth(firebase.auth())
@@ -50,14 +53,14 @@ function useProviders({ config, ...rest }) {
 
 export const GenericButton = ({
     text,
-    config,
     provider = null as firebase.auth.AuthProvider,
     signedInText,
     Button,
     onLogin = null,
     onError = (e: firebase.FirebaseError) => alert(e.message),
-}) => {
-    const { auth, user } = useProviders({ config })
+    useCookie,
+}: LoginButtonProps & { Button }) => {
+    const { auth, user } = useAuth()
     const [result, error, state] = usePromise(async () => {
         if (auth) {
             try {
@@ -89,7 +92,12 @@ export const GenericButton = ({
             />
         )
     }
-    if (!user || user.providerData[0].providerId !== provider.providerId) {
+    const cookieString = useCookie ? cookie.get(useCookie) : ''
+    const loggedIn =
+        !user ||
+        user.providerData[0].providerId !== provider.providerId ||
+        cookieString
+    if (!loggedIn) {
         return (
             <Button
                 onClick={() => auth.signInWithRedirect(provider)}
