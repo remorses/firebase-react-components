@@ -93,11 +93,8 @@ export const GenericButton = ({
         )
     }
     const cookieString = useCookie ? cookie.get(useCookie) : null
-    const loggedOut =
-        !user ||
-        // user.providerData[0].providerId !== provider.providerId ||
-        !cookieString
-    if (loggedOut) {
+    const loggedIn = useCookie ? cookieString : user
+    if (!loggedIn) {
         return (
             <Button
                 onClick={() => auth.signInWithRedirect(provider)}
