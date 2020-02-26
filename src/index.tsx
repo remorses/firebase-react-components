@@ -132,7 +132,7 @@ function useProvider({ Provider, scopes }) {
         const p = new Provider()
         if (scopes && scopes.length) {
             scopes.forEach((scope) => {
-                provider?.addScope(scope)
+                p?.addScope(scope)
             })
         }
         return p
