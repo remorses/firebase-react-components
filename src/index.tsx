@@ -62,15 +62,9 @@ export const GenericButton = ({
     Button,
     onLogin = null,
     onError = (e: firebase.FirebaseError) => alert(e.message),
-    scopes = [],
     useCookie,
 }: LoginButtonProps & { Button }) => {
     const { auth, user } = useAuth()
-    if (scopes && scopes.length) {
-        scopes.forEach((scope) => {
-            provider = provider?.addScope(scope)
-        })
-    }
     const [result, error, state] = usePromise(async () => {
         if (auth) {
             try {
@@ -133,8 +127,24 @@ export const GenericButton = ({
     )
 }
 
-export const GoogleButton = (props: LoginButtonProps) => {
-    const provider = useMemo(() => new firebase.auth.GoogleAuthProvider(), [])
+function useProvider({ Provider, scopes }) {
+    const provider = useMemo(() => {
+        const p = new Provider()
+        if (scopes && scopes.length) {
+            scopes.forEach((scope) => {
+                provider?.addScope(scope)
+            })
+        }
+        return p
+    }, [])
+    return provider
+}
+
+export const GoogleButton = ({ scopes, ...props }: LoginButtonProps) => {
+    const provider = useProvider({
+        Provider: firebase.auth.GoogleAuthProvider,
+        scopes,
+    })
     return (
         <GenericButton
             text='Sign In With Google'
@@ -146,8 +156,11 @@ export const GoogleButton = (props: LoginButtonProps) => {
     )
 }
 
-export const GithubButton = (props: LoginButtonProps) => {
-    const provider = useMemo(() => new firebase.auth.GithubAuthProvider(), [])
+export const GithubButton = ({ scopes, ...props }: LoginButtonProps) => {
+    const provider = useProvider({
+        Provider: firebase.auth.GithubAuthProvider,
+        scopes,
+    })
     return (
         <GenericButton
             text='Sign In With Github'
