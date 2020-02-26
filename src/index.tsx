@@ -67,7 +67,9 @@ export const GenericButton = ({
 }: LoginButtonProps & { Button }) => {
     const { auth, user } = useAuth()
     if (scopes && scopes.length) {
-        scopes.forEach((scope) => provider?.addScope(scope))
+        scopes.forEach((scope) => {
+            provider = provider?.addScope(scope)
+        })
     }
     const [result, error, state] = usePromise(async () => {
         if (auth) {
