@@ -13,9 +13,13 @@ export type LoginButtonProps = {
     text?: string
     signedInText?: string
     provider?: any
-    onLogin?: (user: firebase.User) => Promise<any>
+    onLogin?: (
+        user: firebase.User,
+        credential?: firebase.auth.AuthCredential,
+    ) => Promise<any>
     onError?: (e: firebase.FirebaseError) => void
     useCookie?: string
+    scopes?: Array<string>
 }
 
 function useAuth() {
@@ -25,7 +29,7 @@ function useAuth() {
     useEffect(() => {
         if (!firebase.apps.length) {
             console.error(
-                'you must call firebase.auth().initializeApp() before using firebase-react-components'
+                'you must call firebase.auth().initializeApp() before using firebase-react-components',
             )
         }
 
@@ -39,7 +43,7 @@ function useAuth() {
                     setUser(user)
                     // alert('auth state changed ' + JSON.stringify(user))
                 },
-                (e) => alert(e.message)
+                (e) => alert(e.message),
             )
             return listener
         }
@@ -58,15 +62,23 @@ export const GenericButton = ({
     Button,
     onLogin = null,
     onError = (e: firebase.FirebaseError) => alert(e.message),
+    scopes = [],
     useCookie,
 }: LoginButtonProps & { Button }) => {
     const { auth, user } = useAuth()
+    if (scopes && scopes.length) {
+        scopes.forEach((scope) => provider?.addScope(scope))
+    }
     const [result, error, state] = usePromise(async () => {
         if (auth) {
             try {
-                const { user } = await auth.getRedirectResult()
+                const {
+                    user,
+                    credential,
+                    operationType,
+                } = await auth.getRedirectResult()
                 if (user && onLogin) {
-                    await onLogin(user)
+                    await onLogin(user, credential)
                 }
             } catch (e) {
                 onError(e)
