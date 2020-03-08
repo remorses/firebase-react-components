@@ -15,7 +15,7 @@ export type LoginButtonProps = {
     provider?: any
     onLogin?: (
         user: firebase.User,
-        credential?: firebase.auth.AuthCredential,
+        credential?: firebase.auth.OAuthCredential,
     ) => Promise<any>
     onError?: (e: firebase.FirebaseError) => void
     useCookie?: string
