@@ -10,7 +10,7 @@
     ],
     "scripts": {
         "test": "mocha --require ts-node/register --timeout 10000 tests/* --colors",
-        "example": "yarn install-peers -f && parcel serve --no-autoinstall example/index.html"
+        "example": "parcel serve --no-autoinstall example/index.html"
     },
     "keywords": [],
     "author": "Tommaso De Rossi, morse <beats.by.morse@gmail.com>",

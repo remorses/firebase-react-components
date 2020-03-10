@@ -1,5 +1,5 @@
-import { GoogleButton, GithubButton } from '../src/'
-import React, { useState } from 'react'
+import { GoogleButton, GithubButton, AuthProvider, useAuthData } from '../src/'
+import React, { useState, useContext } from 'react'
 import { H1, Image, Text, Box, Row } from 'hybrid-components'
 import firebase from 'firebase/app'
 import { useAuthState } from 'react-firebase-hooks/auth'
@@ -8,21 +8,34 @@ const App = () => {
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig)
     }
-    const [user, setUser] = useState({})
     return (
         <Box alignContent='center' alignItems='center'>
-            <GoogleButton
-                text='Start With Google'
-                scopes={['https://www.googleapis.com/auth/cloud-platform']}
+            <AuthProvider
+                noPersistence
                 onLogin={async (user, creds) => {
                     console.log(creds.toJSON())
-                    setUser(user)
                 }}
-            />
-            <GithubButton text='Start With Github' />
-            <Box maxWidth='800px' overflowX='scroll'>
-                <pre>{JSON.stringify(user, null, 4)}</pre>
-            </Box>
+                onError={(e) => alert(e.message)}
+            >
+                <GoogleButton
+                    text='Start With Google'
+                    // scopes={['https://www.googleapis.com/auth/cloud-platform']}
+                />
+                <GithubButton text='Start With Github' />
+                <DisplayUser />
+            </AuthProvider>
+        </Box>
+    )
+}
+
+const DisplayUser = () => {
+    const { user={}, loading } = useAuthData()
+    if (loading) {
+        return <>loading...</>
+    }
+    return (
+        <Box maxWidth='800px' overflowX='scroll'>
+            <pre>{JSON.stringify(user, null, 4)}</pre>
         </Box>
     )
 }
