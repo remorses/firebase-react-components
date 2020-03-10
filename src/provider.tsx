@@ -1,6 +1,13 @@
 import firebase from 'firebase/app'
 import 'firebase/auth'
-import React, { createContext, useContext, useEffect, useLayoutEffect, useState } from 'react'
+import React, {
+    createContext,
+    useContext,
+    useEffect,
+    useLayoutEffect,
+    useState,
+    FC,
+} from 'react'
 import usePromise from 'react-use-promise'
 
 interface AuthProviderValue {
@@ -15,15 +22,16 @@ const AuthContext = createContext<AuthProviderValue>({
     // credential: null,
 })
 
-export const AuthProvider = (props: {
-    children
+export interface AuthProviderProps {
     noPersistence?: boolean
     onLogin?: (
         user: firebase.User,
         credential?: firebase.auth.OAuthCredential,
     ) => Promise<any>
     onError?: (e: firebase.FirebaseError) => void
-}) => {
+}
+
+export const AuthProvider: FC<AuthProviderProps> = (props) => {
     const { children, onLogin, onError, noPersistence } = props
     useLayoutEffect(() => {
         if (noPersistence) {
@@ -56,6 +64,14 @@ export const AuthProvider = (props: {
 
 export function useAuthData(): AuthProviderValue {
     return useContext(AuthContext)
+}
+
+export const withAuthProvider = (config: AuthProviderProps) => (Comp) => {
+    return (p) => (
+        <AuthProvider {...config}>
+            <Comp {...p} />
+        </AuthProvider>
+    )
 }
 
 function useAuth() {

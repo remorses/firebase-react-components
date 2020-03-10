@@ -1,2 +1,2 @@
 export * from './buttons'
-export { AuthProvider, useAuthData } from './provider'
+export { AuthProvider, useAuthData, withAuthProvider } from './provider'
