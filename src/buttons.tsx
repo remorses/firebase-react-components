@@ -4,6 +4,9 @@ import firebase from 'firebase'
 import {
     GoogleLoginButton,
     GithubLoginButton,
+    TwitterLoginButton,
+    FacebookLoginButton,
+
 } from 'react-social-login-buttons'
 import { CSSObject } from 'styled-components'
 import React from 'react'
@@ -18,12 +21,13 @@ export const GenericButton = ({
     text,
     provider = null as firebase.auth.AuthProvider,
     Button,
-}: LoginButtonProps & { Button }) => {
+}: LoginButtonProps & { Button: typeof GoogleLoginButton }) => {
     const { user, loading } = useAuthData()
 
     if (loading) {
         return (
             <Button
+                
                 style={
                     {
                         background: '#eee',
@@ -98,7 +102,7 @@ export const FacebookButton = ({ scopes, ...props }: LoginButtonProps) => {
     return (
         <GenericButton
             text='Sign In With Facebook'
-            Button={GithubLoginButton}
+            Button={FacebookLoginButton}
             provider={provider}
             {...props}
         />
@@ -113,7 +117,7 @@ export const TwitterButton = ({ scopes, ...props }: LoginButtonProps) => {
     return (
         <GenericButton
             text='Sign In With Twitter'
-            Button={GithubLoginButton}
+            Button={TwitterLoginButton}
             provider={provider}
             {...props}
         />

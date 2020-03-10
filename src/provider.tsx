@@ -43,7 +43,8 @@ export const AuthProvider = (props: {
                 await onLogin(user, credential)
             }
         } catch (e) {
-            onError(e)
+            await onError(e)
+            return
         }
     }, [])
     const value = {
