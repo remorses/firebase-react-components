@@ -18,7 +18,7 @@ interface AuthProviderValue {
     loading: boolean
 }
 
-const AuthContext = createContext<AuthProviderValue>({
+export const AuthContext = createContext<AuthProviderValue>({
     loading: false,
     // user: undefined,
     // credential: null,
