@@ -7,6 +7,8 @@ import React, {
     useLayoutEffect,
     useState,
     FC,
+    ReactComponentElement,
+    ComponentType,
 } from 'react'
 import usePromise from 'react-use-promise'
 
@@ -66,7 +68,7 @@ export function useAuthData(): AuthProviderValue {
     return useContext(AuthContext)
 }
 
-export const withAuthProvider = (config: AuthProviderProps) => (Comp) => {
+export const withAuthProvider = (config: AuthProviderProps, Comp: ComponentType) => {
     return (p) => (
         <AuthProvider {...config}>
             <Comp {...p} />
