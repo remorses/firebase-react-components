@@ -89,3 +89,33 @@ export const GithubButton = ({ scopes, ...props }: LoginButtonProps) => {
         />
     )
 }
+
+export const FacebookButton = ({ scopes, ...props }: LoginButtonProps) => {
+    const provider = useProvider({
+        Provider: firebase.auth.FacebookAuthProvider,
+        scopes,
+    })
+    return (
+        <GenericButton
+            text='Sign In With Facebook'
+            Button={GithubLoginButton}
+            provider={provider}
+            {...props}
+        />
+    )
+}
+
+export const TwitterButton = ({ scopes, ...props }: LoginButtonProps) => {
+    const provider = useProvider({
+        Provider: firebase.auth.TwitterAuthProvider,
+        scopes,
+    })
+    return (
+        <GenericButton
+            text='Sign In With Twitter'
+            Button={GithubLoginButton}
+            provider={provider}
+            {...props}
+        />
+    )
+}
