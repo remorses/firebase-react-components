@@ -4,7 +4,6 @@ import React, {
     createContext,
     useContext,
     useEffect,
-    useLayoutEffect,
     useState,
     FC,
     ReactComponentElement,
@@ -35,11 +34,11 @@ export interface AuthProviderProps {
 
 export const AuthProvider: FC<AuthProviderProps> = (props) => {
     const { children, onLogin, onError, noPersistence } = props
-    useLayoutEffect(() => {
+    useState(() => {
         if (noPersistence) {
             firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
         }
-    }, [])
+    })
     const { user } = useAuth()
     const [result, error, state] = usePromise(async () => {
         try {
@@ -68,7 +67,10 @@ export function useAuthData(): AuthProviderValue {
     return useContext(AuthContext)
 }
 
-export const withAuthProvider = (config: AuthProviderProps, Comp: ComponentType) => {
+export const withAuthProvider = (
+    config: AuthProviderProps,
+    Comp: ComponentType,
+) => {
     return (p) => (
         <AuthProvider {...config}>
             <Comp {...p} />
@@ -78,13 +80,11 @@ export const withAuthProvider = (config: AuthProviderProps, Comp: ComponentType)
 
 function useAuth() {
     const [user, setUser] = useState<firebase.User>(undefined)
-    useLayoutEffect(() => {
-        if (!firebase.apps.length) {
-            console.error(
-                'you must call firebase.auth().initializeApp() before using firebase-react-components',
-            )
-        }
-    }, [])
+    if (!firebase.apps.length) {
+        console.error(
+            'you must call firebase.auth().initializeApp() before using firebase-react-components',
+        )
+    }
 
     useEffect(() => {
         const listener = firebase.auth().onAuthStateChanged(
