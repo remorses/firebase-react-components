@@ -1,14 +1,13 @@
 import { useMemo } from 'react'
 import { useAuthData } from './provider'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/auth'
 import {
     GoogleLoginButton,
     GithubLoginButton,
     TwitterLoginButton,
     FacebookLoginButton,
-
 } from 'react-social-login-buttons'
-import { CSSObject } from 'styled-components'
 import React from 'react'
 
 export type LoginButtonProps = {
@@ -27,15 +26,12 @@ export const GenericButton = ({
     if (loading) {
         return (
             <Button
-                
-                style={
-                    {
-                        background: '#eee',
-                        color: 'black',
-                        cursor: 'default',
-                        boxShadow: 'none',
-                    } as CSSObject
-                }
+                style={{
+                    background: '#eee',
+                    color: 'black',
+                    cursor: 'default',
+                    boxShadow: 'none',
+                }}
                 activeStyle={{}}
                 preventActiveStyles
                 text='loading'
