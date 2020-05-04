@@ -27,7 +27,7 @@ export interface AuthProviderProps {
     noPersistence?: boolean
     onLogin?: (
         user: firebase.User,
-        credential?: firebase.auth.OAuthCredential,
+        credential?: firebase.auth.AuthCredential,
     ) => Promise<any>
     onError?: (e: firebase.FirebaseError) => void
 }
