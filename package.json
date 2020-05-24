@@ -4,11 +4,14 @@
     "version": "1.1.22",
     "description": "",
     "main": "dist/index.js",
+    "module": "esm/index.js",
     "types": "dist/index.d.ts",
+    "sideEffects": false,
     "files": [
         "/dist/*"
     ],
     "scripts": {
+        "build": "tsc && tsc --outDir esm -m ESNext",
         "test": "mocha --require ts-node/register --timeout 10000 tests/* --colors",
         "example": "parcel serve --no-autoinstall example/index.html"
     },
