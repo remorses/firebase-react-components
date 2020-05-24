@@ -15,7 +15,7 @@ jobs:
                   node-version: 12
                   registry-url: https://registry.npmjs.org/
             - run: yarn
-            - run: tsc
+            - run: yarn build
             - name: Bump version
               uses: remorses/bump-version@js
               with:
