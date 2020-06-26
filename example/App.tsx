@@ -35,6 +35,7 @@ const App = () => {
                     </AuthProvider>
                 </AuthProvider>
                 <Button
+                    variant='outline'
                     onClick={() => {
                         firebase
                             .auth()
@@ -44,7 +45,7 @@ const App = () => {
                 >
                     Logout
                 </Button>
-            </Box>
+            </Stack>
         </ThemeProvider>
     )
 }
