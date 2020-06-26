@@ -10,6 +10,7 @@ import React, {
     ComponentType,
 } from 'react'
 import usePromise from 'react-use-promise'
+import Cookies from 'js-cookie'
 
 interface AuthProviderValue {
     user?: firebase.User
@@ -30,10 +31,11 @@ export interface AuthProviderProps {
         credential?: firebase.auth.AuthCredential,
     ) => Promise<any>
     onError?: (e: firebase.FirebaseError) => void
+    syncToCookie?: string
 }
 
 export const AuthProvider: FC<AuthProviderProps> = (props) => {
-    const { children, onLogin, onError, noPersistence } = props
+    const { children, onLogin, onError, noPersistence, syncToCookie } = props
     useState(() => {
         if (noPersistence) {
             firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
@@ -55,6 +57,36 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
             await onError(e)
             return
         }
+    }, [])
+    useEffect(() => {
+        return firebase.auth().onIdTokenChanged(
+            async (user) => {
+                if (!syncToCookie) {
+                    return
+                }
+                if (!user) {
+                    console.log('signed out, removing cookie ' + syncToCookie)
+                    Cookies.remove(syncToCookie)
+                    return
+                }
+                console.log('storing uid to cookie ' + syncToCookie)
+                const { expirationTime } = await user.getIdTokenResult()
+                const uid = await user.getIdToken()
+                Cookies.set(syncToCookie, uid, {
+                    path: '/',
+                    expires: new Date(expirationTime),
+                })
+            },
+            (e) => {
+                console.warn(
+                    'deleting cookie ' +
+                        syncToCookie +
+                        ' because of auth error: ' +
+                        e.message,
+                )
+                Cookies.remove(syncToCookie)
+            },
+        )
     }, [])
     const value = {
         user,

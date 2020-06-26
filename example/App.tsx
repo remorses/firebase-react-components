@@ -1,5 +1,5 @@
 import { GoogleButton, GithubButton, AuthProvider, useAuthData } from '../src/'
-import { ThemeProvider, Box } from '@chakra-ui/core'
+import { ThemeProvider, Box, Button, Stack } from '@chakra-ui/core'
 import React, { useState, useContext } from 'react'
 import firebase from 'firebase/app'
 import { useAuthState } from 'react-firebase-hooks/auth'
@@ -10,19 +10,18 @@ const App = () => {
     }
     return (
         <ThemeProvider>
-            <Box alignContent='center' alignItems='center'>
+            <Stack spacing='6' alignContent='center' alignItems='center'>
                 <AuthProvider
-                    noPersistence
                     onLogin={async (user, creds) => {
-                        console.log('onLogin 1')
+                        console.log('onLogin 2')
                         console.log(creds.toJSON())
                     }}
+                    syncToCookie='FIREBASE_COOKIE'
                     onError={(e) => alert(e.message)}
                 >
                     <AuthProvider
-                        noPersistence
                         onLogin={async (user, creds) => {
-                            console.log('onLogin 2')
+                            console.log('onLogin 1')
                             console.log(creds.toJSON())
                         }}
                         onError={(e) => alert(e.message)}
@@ -35,6 +34,16 @@ const App = () => {
                         <DisplayUser />
                     </AuthProvider>
                 </AuthProvider>
+                <Button
+                    onClick={() => {
+                        firebase
+                            .auth()
+                            .signOut()
+                            .then(() => console.log('signed out'))
+                    }}
+                >
+                    Logout
+                </Button>
             </Box>
         </ThemeProvider>
     )

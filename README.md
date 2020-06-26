@@ -21,7 +21,7 @@ const App = () => {
     return (
         <Box alignContent='center' alignItems='center'>
             <AuthProvider
-                noPersistence // disable firebase persistence
+                syncToCookie='FIREBASE_COOKIE' // syncs the user uid to the cookie FIREBASE_COOKIE
                 onLogin={async (user, creds) => {
                     console.log(creds.toJSON())
                 }}
