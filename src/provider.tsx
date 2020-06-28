@@ -32,10 +32,18 @@ export interface AuthProviderProps {
     ) => Promise<any>
     onError?: (e: firebase.FirebaseError) => void
     syncToCookie?: string
+    syncToLocalStorage?: string
 }
 
 export const AuthProvider: FC<AuthProviderProps> = (props) => {
-    const { children, onLogin, onError, noPersistence, syncToCookie } = props
+    const {
+        children,
+        onLogin,
+        onError,
+        noPersistence,
+        syncToCookie,
+        syncToLocalStorage,
+    } = props
     useState(() => {
         if (noPersistence) {
             firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
@@ -58,36 +66,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
             return
         }
     }, [])
-    useEffect(() => {
-        return firebase.auth().onIdTokenChanged(
-            async (user) => {
-                if (!syncToCookie) {
-                    return
-                }
-                if (!user) {
-                    console.log('signed out, removing cookie ' + syncToCookie)
-                    Cookies.remove(syncToCookie)
-                    return
-                }
-                console.log('storing uid to cookie ' + syncToCookie)
-                const { expirationTime } = await user.getIdTokenResult()
-                const uid = await user.getIdToken()
-                Cookies.set(syncToCookie, uid, {
-                    path: '/',
-                    expires: new Date(expirationTime),
-                })
-            },
-            (e) => {
-                console.warn(
-                    'deleting cookie ' +
-                        syncToCookie +
-                        ' because of auth error: ' +
-                        e.message,
-                )
-                Cookies.remove(syncToCookie)
-            },
-        )
-    }, [])
+    syncToken({ syncToCookie, syncToLocalStorage })
     const value = {
         user,
         loading: state === 'pending',
@@ -132,4 +111,72 @@ function useAuth() {
     return {
         user,
     }
+}
+
+function syncToken({
+    syncToLocalStorage,
+    syncToCookie,
+}: {
+    syncToLocalStorage?: string
+    syncToCookie?: string
+}) {
+    useEffect(() => {
+        return firebase.auth().onIdTokenChanged(
+            async (user) => {
+                // signed out
+                if (!user) {
+                    if (syncToCookie) {
+                        console.log(
+                            'signed out, removing cookie ' + syncToCookie,
+                        )
+                        Cookies.remove(syncToCookie)
+                    }
+                    if (syncToLocalStorage) {
+                        console.log(
+                            'signed out, removing local storage item ' +
+                                syncToLocalStorage,
+                        )
+                        localStorage.removeItem(syncToLocalStorage)
+                    }
+                    return
+                }
+                // signed in
+                const { expirationTime, token } = await user.getIdTokenResult()
+                if (syncToCookie) {
+                    console.log('storing idToken to cookie ' + syncToCookie)
+                    Cookies.set(syncToCookie, token, {
+                        path: '/',
+                        expires: new Date(expirationTime),
+                    })
+                }
+                if (syncToLocalStorage) {
+                    console.log(
+                        'storing idToken to local storage item ' +
+                            syncToLocalStorage,
+                    )
+                    localStorage.setItem(syncToLocalStorage, token)
+                }
+            },
+            (e) => {
+                if (syncToCookie) {
+                    console.warn(
+                        'deleting cookie ' +
+                            syncToCookie +
+                            ' because of auth error: ' +
+                            e.message,
+                    )
+                    Cookies.remove(syncToCookie)
+                }
+                if (syncToLocalStorage) {
+                    console.warn(
+                        'deleting local storage item ' +
+                            syncToLocalStorage +
+                            ' because of auth error: ' +
+                            e.message,
+                    )
+                    localStorage.removeItem(syncToLocalStorage)
+                }
+            },
+        )
+    }, [])
 }

@@ -17,6 +17,7 @@ const App = () => {
                         console.log(creds.toJSON())
                     }}
                     syncToCookie='FIREBASE_COOKIE'
+                    syncToLocalStorage='FIREBASE_TOKEN'
                     onError={(e) => alert(e.message)}
                 >
                     <AuthProvider

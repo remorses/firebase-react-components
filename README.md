@@ -21,7 +21,8 @@ const App = () => {
     return (
         <Box alignContent='center' alignItems='center'>
             <AuthProvider
-                syncToCookie='FIREBASE_COOKIE' // syncs the user uid to the cookie FIREBASE_COOKIE
+                syncToCookie='FIREBASE_COOKIE' // syncs the user idToken to the cookie FIREBASE_COOKIE
+                syncToLocalStorage='FIREBASE_TOKEN' // syncs the user idToken to the local storage
                 onLogin={async (user, creds) => {
                     console.log(creds.toJSON())
                 }}
