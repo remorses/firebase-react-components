@@ -24,11 +24,16 @@ export const AuthContext = createContext<AuthProviderValue>({
     // credential: null,
 })
 
+export type FirebaseCredentials = firebase.auth.AuthCredential & {
+    accessToken?: string
+    providerId?: string
+}
+
 export interface AuthProviderProps {
     noPersistence?: boolean
     onLogin?: (
         user: firebase.User,
-        credential?: firebase.auth.AuthCredential,
+        credential?: FirebaseCredentials,
     ) => Promise<any>
     onError?: (e: firebase.FirebaseError) => void
     syncToCookie?: string
@@ -103,7 +108,11 @@ function useAuth() {
                 setUser(user)
                 // alert('auth state changed ' + JSON.stringify(user))
             },
-            (e) => alert(e.message),
+            (e) => {
+                console.error(e)
+                alert(e.message)
+                setUser(null)
+            },
         )
         return () => listener()
     })

@@ -24,6 +24,7 @@ const App = () => {
                 syncToCookie='FIREBASE_COOKIE' // syncs the user idToken to the cookie FIREBASE_COOKIE
                 syncToLocalStorage='FIREBASE_TOKEN' // syncs the user idToken to the local storage
                 onLogin={async (user, creds) => {
+                    
                     console.log(creds.toJSON())
                 }}
                 onError={(e) => alert(e.message)}

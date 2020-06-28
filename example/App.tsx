@@ -14,7 +14,10 @@ const App = () => {
                 <AuthProvider
                     onLogin={async (user, creds) => {
                         console.log('onLogin 2')
-                        console.log(creds.toJSON())
+                        console.log('creds', creds)
+                        console.log('user', user)
+                        
+                        // console.log(creds.toJSON())
                     }}
                     syncToCookie='FIREBASE_COOKIE'
                     syncToLocalStorage='FIREBASE_TOKEN'
@@ -23,7 +26,8 @@ const App = () => {
                     <AuthProvider
                         onLogin={async (user, creds) => {
                             console.log('onLogin 1')
-                            console.log(creds.toJSON())
+                            console.log('accessToken', creds.accessToken)
+                            // console.log(creds.toJSON())
                         }}
                         onError={(e) => alert(e.message)}
                     >
