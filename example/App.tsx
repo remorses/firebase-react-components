@@ -56,7 +56,7 @@ const App = () => {
 }
 
 const DisplayUser = () => {
-    const { user = {}, credential, loading } = useAuthData()
+    const { user = {}, loading } = useAuthData()
     if (loading) {
         return <>loading...</>
     }
