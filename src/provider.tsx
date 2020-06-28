@@ -21,10 +21,10 @@ interface AuthProviderValue {
 export const AuthContext = createContext<AuthProviderValue>({
     loading: false,
     // user: undefined,
-    // credential: null,
+    // credential: undefined,
 })
 
-export type FirebaseCredentials = firebase.auth.AuthCredential & {
+export type FirebaseCredential = firebase.auth.AuthCredential & {
     accessToken?: string
     providerId?: string
 }
@@ -33,7 +33,7 @@ export interface AuthProviderProps {
     noPersistence?: boolean
     onLogin?: (
         user: firebase.User,
-        credential?: FirebaseCredentials,
+        credential?: FirebaseCredential,
     ) => Promise<any>
     onError?: (e: firebase.FirebaseError) => void
     syncToCookie?: string
@@ -60,7 +60,6 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
             const {
                 user,
                 credential,
-                operationType,
             } = await firebase.auth().getRedirectResult()
             if (user && onLogin) {
                 console.log('received user, calling onLogin')
@@ -111,7 +110,7 @@ function useAuth() {
             (e) => {
                 console.error(e)
                 alert(e.message)
-                setUser(null)
+                setUser(undefined)
             },
         )
         return () => listener()

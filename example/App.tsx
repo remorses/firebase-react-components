@@ -16,7 +16,7 @@ const App = () => {
                         console.log('onLogin 2')
                         console.log('creds', creds)
                         console.log('user', user)
-                        
+
                         // console.log(creds.toJSON())
                     }}
                     syncToCookie='FIREBASE_COOKIE'
@@ -56,13 +56,16 @@ const App = () => {
 }
 
 const DisplayUser = () => {
-    const { user = {}, loading } = useAuthData()
+    const { user = {}, credential, loading } = useAuthData()
     if (loading) {
         return <>loading...</>
     }
     return (
         <Box maxWidth='800px' overflowX='scroll'>
+            <h2>user</h2>
             <pre>{JSON.stringify(user, null, 4)}</pre>
+            <h2>credential</h2>
+            <pre>{JSON.stringify(credential, null, 4)}</pre>
         </Box>
     )
 }
