@@ -114,7 +114,7 @@ function useAuth() {
             },
         )
         return () => listener()
-    })
+    }, [])
 
     return {
         user,
