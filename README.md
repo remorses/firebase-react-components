@@ -11,7 +11,6 @@ yarn add firebase-react-components
 ```tsx
 import { GoogleButton, GithubButton, useAuthData } from 'firebase-react-components'
 import React from 'react'
-import { H1, Image, Text, Box, Row } from 'hybrid-components'
 import firebase from 'firebase'
 
 const App = () => {
@@ -19,7 +18,7 @@ const App = () => {
         firebase.initializeApp(firebaseConfig)
     }
     return (
-        <Box alignContent='center' alignItems='center'>
+        <div>
             <AuthProvider
                 syncToCookie='FIREBASE_COOKIE' // syncs the user idToken to the cookie FIREBASE_COOKIE
                 syncToLocalStorage='FIREBASE_TOKEN' // syncs the user idToken to the local storage
@@ -36,7 +35,7 @@ const App = () => {
                 <GithubButton text='Start With Github' />
                 <DisplayUser />
             </AuthProvider>
-        </Box>
+        </div>
     )
 }
 
@@ -46,9 +45,7 @@ const DisplayUser = () => {
         return <>loading...</>
     }
     return (
-        <Box maxWidth='800px' overflowX='scroll'>
-            <pre>{JSON.stringify(user, null, 4)}</pre>
-        </Box>
+        <pre>{JSON.stringify(user, null, 4)}</pre>
     )
 }
 ```
